@@ -1,0 +1,8 @@
+# Overlay on mini-swe-agent's builtin benchmarks/swebench.yaml (merged via -c).
+# Only the endpoint and step limit differ from the default config; prompts,
+# environment and sampling are left at mini-swe-agent defaults.
+model:
+  model_kwargs:
+    api_base: http://127.0.0.1:8094/v1
+agent:
+  step_limit: 50
