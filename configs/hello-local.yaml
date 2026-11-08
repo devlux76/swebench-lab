@@ -1,0 +1,5 @@
+# Overlay for the hello-world benchmark: local environment (no docker), step limit 20.
+# Use with: mini -c mini.yaml -c configs/local-router.yaml -c configs/hello-local.yaml --environment-class local
+agent:
+  step_limit: 20
+  cost_limit: 0

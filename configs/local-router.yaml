@@ -1,8 +1,15 @@
-# Overlay on mini-swe-agent's builtin benchmarks/swebench.yaml (merged via -c).
-# Only the endpoint and step limit differ from the default config; prompts,
-# environment and sampling are left at mini-swe-agent defaults.
+# Overlay for mini-swe-agent configs (merged via -c after the builtin config).
+# Endpoint, token cap, request timeout, and the Qwen3-Coder model card sampling.
+# Timeout 900 s: an earlier lucet pilot hung >40 min with no cap (see RESULTS.md).
 model:
   model_kwargs:
     api_base: http://127.0.0.1:8094/v1
+    max_tokens: 4096
+    timeout: 900
+    temperature: 0.7
+    top_p: 0.8
+    extra_body:
+      top_k: 20
+      repetition_penalty: 1.05
 agent:
   step_limit: 50
