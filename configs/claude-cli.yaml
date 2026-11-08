@@ -1,0 +1,9 @@
+# Overlay on mini-swe-agent's builtin benchmarks/swebench.yaml (merged via -c), like local-router.yaml.
+# Backend: Claude Code CLI (claude -p --model haiku, all tools disabled); see claude_cli_model.py.
+# Needs PYTHONPATH=<this dir>. Prompts, environment and step limit are the same as the other runs
+# except step_limit, which is set to 50 as in local-router.yaml.
+model:
+  model_class: claude_cli_model.ClaudeCliModel
+  cli_model: haiku
+agent:
+  step_limit: 50

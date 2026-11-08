@@ -21,3 +21,31 @@ Outputs: `runs/pilot-lucet/preds.json`, `runs/pilot-lucet/<id>/<id>.traj.json`, 
 
 ## Hours per instance
 Not estimated yet (no measured run).
+
+## Haiku via Claude Code CLI (run `haiku-cli-5`, branch `haiku-cli-backend`)
+
+Backend: `claude_cli_model.py` (`ClaudeCliModel`), config `configs/claude-cli.yaml`, wrapper `run_haiku_cli.sh`.
+Each query runs `claude -p --model haiku --output-format json --tools "" --safe-mode --no-session-persistence --permission-mode dontAsk --system-prompt <system + bash-fence contract>` with the transcript on stdin; timeout 300 s, 1 retry. The CLI has no tools, so each ```bash fenced block in the reply becomes one bash tool call. Otherwise swebench.yaml prompts and environment are unchanged; step_limit 50.
+
+Smoke test (local env, "create hello.txt containing hi, then submit"): 2 model calls, `exit_status: Submitted`, hello.txt written, list-price cost $0.00099.
+
+| instance | status | steps (model calls) | wall s | input tok (incl. cache) | output tok | reported cost (USD, list) | patch submitted | resolved |
+|---|---|---|---|---|---|---|---|---|
+| django__django-11790 | Submitted | 12 | 577 | 73,819 | 13,188 | 0.0194 | yes (829 chars) | not evaluated |
+| django__django-11815 | pending (image pulled on retry 4; run not yet done) | - | - | - | - | - | - | - |
+| django__django-11848 | pending (docker pull failed) | - | - | - | - | - | - | - |
+| django__django-11880 | pending (docker pull failed) | - | - | - | - | - | - | - |
+| django__django-11885 | pending (docker pull failed) | - | - | - | - | - | - | - |
+
+Notes:
+- Wall = model init to last model reply (includes container start, excludes eval).
+- 11790: 13 CLI attempts for 12 calls; one call hit the 300 s timeout and the retry succeeded.
+- Costs are the CLI's `total_cost_usd` (list-price estimate), not a measured plan charge.
+- The first batch attempt was SIGTERMed at 19:44:13 by an unidentified sender (not this lab's code). It was re-run from scratch.
+- Instances 11815/11848/11880/11885 in the first batch failed at `docker run` (Docker Hub blob/auth errors, transient), before any model call; they were re-queued.
+- Evaluation is BLOCKED: `swebench.harness.run_evaluation` (5.0.2) fails with `KeyError: 'image'` on the princeton-nlp/SWE-bench_Verified rows (`make_test_spec` needs `image` and `eval_script` fields the public dataset lacks). The NOTES eval command does not work as written; `resolved` is unknown for all rows.
+
+Resume:
+    cd /home/mirai/projects/swebench-lab-haiku
+    # pull the remaining images (retry), then re-run the four pending ids with --redo-existing
+    # (see the batch command in this section's run; filter ^(django__django-11815|django__django-11848|django__django-11880|django__django-11885)$)
