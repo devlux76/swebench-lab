@@ -45,7 +45,8 @@ Notes:
 - Instances 11815/11848/11880/11885 in the first batch failed at `docker run` (Docker Hub blob/auth errors, transient), before any model call; they were re-queued.
 - Evaluation is BLOCKED: `swebench.harness.run_evaluation` (5.0.2) fails with `KeyError: 'image'` on the princeton-nlp/SWE-bench_Verified rows (`make_test_spec` needs `image` and `eval_script` fields the public dataset lacks). The NOTES eval command does not work as written; `resolved` is unknown for all rows.
 
-Resume:
+Stopped at 20:18 MST (weekly plan usage 93%). Nothing else is running from this lab. Resume:
     cd /home/mirai/projects/swebench-lab-haiku
-    # pull the remaining images (retry), then re-run the four pending ids with --redo-existing
-    # (see the batch command in this section's run; filter ^(django__django-11815|django__django-11848|django__django-11880|django__django-11885)$)
+    for i in django__django-11848 django__django-11880 django__django-11885; do docker pull docker.io/swebench/sweb.eval.x86_64.$(echo $i | sed 's/__/_1776_/'):latest; done
+    ./run_haiku_cli.sh haiku-cli-5 '^(django__django-11815|django__django-11848|django__django-11880|django__django-11885)$'   # add --redo-existing if preds.json already has them
+Eval stays blocked until the KeyError 'image' problem is fixed (dataset rows need image and eval_script, or a harness that builds them).
