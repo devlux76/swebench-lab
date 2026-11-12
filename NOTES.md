@@ -1,5 +1,9 @@
 # SWE-bench lab: notes
 
+[Terminal-RSI evaluation follow-up](reports/terminal-rsi-evaluation.md) proposes
+strict-success reporting, frozen task manifests and matched base/adapter trials.
+It records no new benchmark results.
+
 Versions (installed in .venv, Python 3.12): mini-swe-agent 2.4.6, swebench 5.0.2, litellm 1.108.3.
 
 ## mini-swe-agent batch runner (facts from installed source)
